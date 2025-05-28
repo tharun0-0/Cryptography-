@@ -1,0 +1,42 @@
+# Letter Frequency Attack on Monoalphabetic Substitution Cipher
+
+import string
+
+def letter_frequency(text):
+    frequency = {}
+    for letter in string.ascii_lowercase:
+        frequency[letter] = text.lower().count(letter)
+    return frequency
+
+def generate_substitutions(ciphertext):
+    frequency_order = 'etaoinshrdlcumwfgypbvkjxqz'
+    letter_freq = letter_frequency(ciphertext)
+    sorted_letters = sorted(letter_freq, key=letter_freq.get, reverse=True)
+    substitution = {}
+    for i in range(len(sorted_letters)):
+        substitution[sorted_letters[i]] = frequency_order[i]
+    return substitution
+
+def decrypt(ciphertext, substitution):
+    plaintext = ''
+    for char in ciphertext:
+        if char.lower() in substitution:
+            if char.isupper():
+                plaintext += substitution[char.lower()].upper()
+            else:
+                plaintext += substitution[char.lower()]
+        else:
+            plaintext += char
+    return plaintext
+
+def generate_possible_plaintexts(ciphertext, top_n=10):
+    substitution = generate_substitutions(ciphertext)
+    possible_plaintexts = []
+    for _ in range(top_n):
+        possible_plaintexts.append(decrypt(ciphertext, substitution))
+    return possible_plaintexts
+
+ciphertext = "Gsv jfrxp yildm ulc qfhg"
+top_plaintexts = generate_possible_plaintexts(ciphertext)
+for i, text in enumerate(top_plaintexts):
+    print(f"{i + 1}: {text}")
