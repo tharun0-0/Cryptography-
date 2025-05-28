@@ -1,0 +1,43 @@
+# Encrypt and Decrypt in Cipher Block Chaining Mode using S-DES
+
+def sdes_encrypt(plaintext, key):
+    # S-DES encryption logic here
+    pass
+
+def sdes_decrypt(ciphertext, key):
+    # S-DES decryption logic here
+    pass
+
+def xor_blocks(block1, block2):
+    return ''.join(str(int(b1) ^ int(b2)) for b1, b2 in zip(block1, block2))
+
+def cbc_encrypt(plaintext, key, iv):
+    ciphertext = ''
+    previous_block = iv
+    for i in range(0, len(plaintext), 8):
+        block = plaintext[i:i+8]
+        block = xor_blocks(block, previous_block)
+        encrypted_block = sdes_encrypt(block, key)
+        ciphertext += encrypted_block
+        previous_block = encrypted_block
+    return ciphertext
+
+def cbc_decrypt(ciphertext, key, iv):
+    decrypted_text = ''
+    previous_block = iv
+    for i in range(0, len(ciphertext), 8):
+        block = ciphertext[i:i+8]
+        decrypted_block = sdes_decrypt(block, key)
+        decrypted_block = xor_blocks(decrypted_block, previous_block)
+        decrypted_text += decrypted_block
+        previous_block = block
+    return decrypted_text
+
+key = '0111111101'
+iv = '10101010'
+plaintext = '0000000100100011'
+ciphertext = cbc_encrypt(plaintext, key, iv)
+decrypted_text = cbc_decrypt(ciphertext, key, iv)
+
+print("Ciphertext:", ciphertext)
+print("Decrypted Text:", decrypted_text)
