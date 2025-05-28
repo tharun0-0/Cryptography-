@@ -1,0 +1,32 @@
+def ecb_encrypt(plaintext, key):
+    block_size = 16
+    padded_plaintext = plaintext + (block_size - len(plaintext) % block_size) * b'\x00'
+    ciphertext = b''
+    for i in range(0, len(padded_plaintext), block_size):
+        block = padded_plaintext[i:i + block_size]
+        ciphertext += bytes(a ^ b for a, b in zip(block, key))
+    return ciphertext
+
+def cbc_encrypt(plaintext, key, iv):
+    block_size = 16
+    padded_plaintext = plaintext + (block_size - len(plaintext) % block_size) * b'\x00'
+    ciphertext = b''
+    previous_block = iv
+    for i in range(0, len(padded_plaintext), block_size):
+        block = padded_plaintext[i:i + block_size]
+        block = bytes(a ^ b for a, b in zip(block, previous_block))
+        ciphertext += bytes(a ^ b for a, b in zip(block, key))
+        previous_block = ciphertext[-block_size:]
+    return ciphertext
+
+def cfb_encrypt(plaintext, key, iv):
+    block_size = 16
+    padded_plaintext = plaintext + (block_size - len(plaintext) % block_size) * b'\x00'
+    ciphertext = b''
+    previous_block = iv
+    for i in range(0, len(padded_plaintext), block_size):
+        block = padded_plaintext[i:i + block_size]
+        keystream = bytes(a ^ b for a, b in zip(previous_block, key))
+        ciphertext += bytes(a ^ b for a, b in zip(block, keystream))
+        previous_block = ciphertext[-block_size:]
+    return ciphertext
