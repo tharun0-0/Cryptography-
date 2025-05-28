@@ -1,0 +1,18 @@
+import math
+
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+def find_common_factor(n, block):
+    return gcd(n, block)
+
+n = 55
+block = 5
+common_factor = find_common_factor(n, block)
+
+if common_factor > 1:
+    print(f"Common factor found: {common_factor}")
+else:
+    print("No common factor found.")
