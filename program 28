@@ -1,0 +1,22 @@
+# Diffie-Hellman Protocol in C
+
+#include <stdio.h>
+#include <math.h>
+
+int main() {
+    int a = 5; 
+    int q = 23; 
+    int xA = 6; 
+    int xB = 15; 
+
+    int A = (int)pow(a, xA) % q; 
+    int B = (int)pow(a, xB) % q; 
+
+    int keyA = (int)pow(B, xA) % q; 
+    int keyB = (int)pow(A, xB) % q; 
+
+    printf("Alice's computed key: %d\n", keyA); 
+    printf("Bob's computed key: %d\n", keyB); 
+
+    return 0; 
+}
