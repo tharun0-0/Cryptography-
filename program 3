@@ -1,0 +1,32 @@
+# Monoalphabetic Substitution Cipher in Python
+
+def encrypt(plaintext, key):
+    alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    ciphertext = ''
+    for char in plaintext.upper():
+        if char in alphabet:
+            index = alphabet.index(char)
+            ciphertext += key[index]
+        else:
+            ciphertext += char
+    return ciphertext
+
+def decrypt(ciphertext, key):
+    alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    plaintext = ''
+    for char in ciphertext.upper():
+        if char in key:
+            index = key.index(char)
+            plaintext += alphabet[index]
+        else:
+            plaintext += char
+    return plaintext
+
+key = 'QWERTYUIOPASDFGHJKLZXCVBNM'
+plaintext = 'HELLO WORLD'
+ciphertext = encrypt(plaintext, key)
+decrypted_text = decrypt(ciphertext, key)
+
+print('Plaintext:', plaintext)
+print('Ciphertext:', ciphertext)
+print('Decrypted:', decrypted_text)
