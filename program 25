@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <string.h>
+
+void encrypt(unsigned char *plaintext, unsigned char *key, unsigned char *ciphertext) {
+    for (int i = 0; i < 6; i++) {
+        ciphertext[i] = plaintext[i] ^ key[i];
+    }
+}
+
+void decrypt(unsigned char *ciphertext, unsigned char *key, unsigned char *plaintext) {
+    for (int i = 0; i < 6; i++) {
+        plaintext[i] = ciphertext[i] ^ key[i];
+    }
+}
+
+int main() {
+    unsigned char plaintext[6] = {0b00000001, 0b00000010, 0b00000000, 0b00000000, 0b00000000, 0b00000000};
+    unsigned char key[6] = {0b01111110, 0b11111101, 0b00000000, 0b00000000, 0b00000000, 0b00000000};
+    unsigned char ciphertext[6];
+    unsigned char decrypted[6];
+
+    encrypt(plaintext, key, ciphertext);
+    decrypt(ciphertext, key, decrypted);
+
+    printf("Ciphertext: ");
+    for (int i = 0; i < 6; i++) {
+        printf("%08b ", ciphertext[i]);
+    }
+    printf("\nDecrypted: ");
+    for (int i = 0; i < 6; i++) {
+        printf("%08b ", decrypted[i]);
+    }
+    return 0;
+}
