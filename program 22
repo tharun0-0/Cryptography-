@@ -1,0 +1,29 @@
+def ecb_mode_encrypt(plaintext, key):
+    from Crypto.Cipher import AES
+    cipher = AES.new(key, AES.MODE_ECB)
+    return cipher.encrypt(plaintext)
+
+def ecb_mode_decrypt(ciphertext, key):
+    from Crypto.Cipher import AES
+    cipher = AES.new(key, AES.MODE_ECB)
+    return cipher.decrypt(ciphertext)
+
+def cbc_mode_encrypt(plaintext, key, iv):
+    from Crypto.Cipher import AES
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+    return cipher.encrypt(plaintext)
+
+def cbc_mode_decrypt(ciphertext, key, iv):
+    from Crypto.Cipher import AES
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+    return cipher.decrypt(ciphertext)
+
+plaintext = b'This is a test block.'
+key = b'Sixteen byte key'
+iv = b'This is an IV456'
+
+ecb_ciphertext = ecb_mode_encrypt(plaintext, key)
+cbc_ciphertext = cbc_mode_encrypt(plaintext, key, iv)
+
+ecb_decrypted = ecb_mode_decrypt(ecb_ciphertext, key)
+cbc_decrypted = cbc_mode_decrypt(cbc_ciphertext, key, iv)
