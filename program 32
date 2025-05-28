@@ -1,0 +1,30 @@
+# C Program for DSA Signature Generation
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main() {
+    int p = 23;
+    int q = 11;
+    int g = 5;
+    int x = 6;
+    int k;
+    int r, s;
+    int m = 9;
+
+    srand(time(0));
+    k = rand() % (q - 1) + 1;
+    r = (int)((pow(g, k)) % p) % q;
+    s = ((x * r) + (k * m)) % q;
+
+    printf("Signature (r, s): (%d, %d)\n", r, s);
+
+    k = rand() % (q - 1) + 1;
+    r = (int)((pow(g, k)) % p) % q;
+    s = ((x * r) + (k * m)) % q;
+
+    printf("Signature (r, s) for the same message: (%d, %d)\n", r, s);
+
+    return 0;
+}
