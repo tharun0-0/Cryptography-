@@ -1,0 +1,48 @@
+# Data Encryption Standard (DES) Implementation in C
+
+#include <stdio.h>
+#include <string.h>
+
+void initialPermutation(unsigned char *input, unsigned char *output) {
+    int ip[64] = {58, 50, 42, 34, 26, 18, 10, 2,
+                  60, 52, 44, 36, 28, 20, 12, 4,
+                  62, 54, 46, 38, 30, 22, 14, 6,
+                  64, 56, 48, 40, 32, 24, 16, 8,
+                  57, 49, 41, 33, 25, 17, 9, 1,
+                  59, 51, 43, 35, 27, 19, 11, 3,
+                  61, 53, 45, 37, 29, 21, 13, 5,
+                  63, 55, 47, 39, 31, 23, 15, 7};
+    for (int i = 0; i < 64; i++) {
+        output[i] = input[ip[i] - 1];
+    }
+}
+
+void finalPermutation(unsigned char *input, unsigned char *output) {
+    int fp[64] = {40, 8, 48, 16, 56, 24, 32, 0,
+                  36, 64, 44, 52, 28, 12, 60, 20,
+                  28, 0, 36, 8, 44, 16, 52, 24,
+                  20, 40, 12, 32, 56, 48, 64, 8};
+    for (int i = 0; i < 64; i++) {
+        output[i] = input[fp[i]];
+    }
+}
+
+void desEncrypt(unsigned char *input, unsigned char *key, unsigned char *output) {
+    unsigned char permutedInput[64];
+    initialPermutation(input, permutedInput);
+    // Add DES rounds and key schedule here
+    finalPermutation(permutedInput, output);
+}
+
+int main() {
+    unsigned char input[64] = { /* 64 bits of plaintext */ };
+    unsigned char key[56] = { /* 56 bits of key */ };
+    unsigned char output[64];
+
+    desEncrypt(input, key, output);
+    printf("Ciphertext: ");
+    for (int i = 0; i < 64; i++) {
+        printf("%d", output[i]);
+    }
+    return 0;
+}
