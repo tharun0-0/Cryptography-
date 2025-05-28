@@ -1,0 +1,31 @@
+def left_shift(key):
+    return (key << 1) & ((1 << 128) - 1)
+
+def generate_subkeys(key):
+    if len(key) == 16:
+        k1 = left_shift(int.from_bytes(key, 'big'))
+        k2 = left_shift(k1)
+        if k1 & (1 << 127):
+            k1 ^= 0x87
+        if k2 & (1 << 127):
+            k2 ^= 0x87
+        return k1.to_bytes(16, 'big'), k2.to_bytes(16, 'big')
+    elif len(key) == 8:
+        k1 = left_shift(int.from_bytes(key, 'big'))
+        k2 = left_shift(k1)
+        if k1 & (1 << 63):
+            k1 ^= 0x1B
+        if k2 & (1 << 63):
+            k2 ^= 0x1B
+        return k1.to_bytes(8, 'big'), k2.to_bytes(8, 'big')
+    else:
+        raise ValueError("Invalid key size")
+
+key_128 = b'\x00' * 16
+key_64 = b'\x00' * 8
+
+subkey_128 = generate_subkeys(key_128)
+subkey_64 = generate_subkeys(key_64)
+
+print("Subkeys for 128-bit key:", subkey_128)
+print("Subkeys for 64-bit key:", subkey_64)
