@@ -1,0 +1,27 @@
+# Hill Cipher Attack
+def hill_cipher_attack(plaintext, ciphertext):
+    # Implementation of the Hill cipher attack
+    pass
+
+# One-Time Pad Vigenère Cipher
+def vigenere_one_time_pad_encrypt(plaintext, key_stream):
+    ciphertext = ""
+    for i in range(len(plaintext)):
+        shift = key_stream[i % len(key_stream)]
+        encrypted_char = chr((ord(plaintext[i]) - ord('a') + shift) % 26 + ord('a'))
+        ciphertext += encrypted_char
+    return ciphertext
+
+def find_key_for_decryption(ciphertext, target_plaintext):
+    key = []
+    for i in range(len(ciphertext)):
+        shift = (ord(ciphertext[i]) - ord(target_plaintext[i])) % 26
+        key.append(shift)
+    return key
+
+plaintext = "send more money"
+key_stream = [9, 0, 1, 7, 23, 15, 21, 14, 11, 11, 2, 8, 9]
+ciphertext = vigenere_one_time_pad_encrypt(plaintext, key_stream)
+
+target_plaintext = "cash not needed"
+key = find_key_for_decryption(ciphertext, target_plaintext)
