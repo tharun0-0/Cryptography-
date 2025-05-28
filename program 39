@@ -1,0 +1,37 @@
+def letter_frequency_attack(ciphertext, top_n=10):
+    frequency = {}
+    for char in ciphertext:
+        if char.isalpha():
+            char = char.lower()
+            frequency[char] = frequency.get(char, 0) + 1
+    sorted_freq = sorted(frequency.items(), key=lambda x: x[1], reverse=True)
+    return sorted_freq[:top_n]
+
+def decrypt_additive_cipher(ciphertext, key):
+    decrypted_text = ""
+    for char in ciphertext:
+        if char.isalpha():
+            shift = ord(char) - key
+            if char.islower():
+                if shift < ord('a'):
+                    shift += 26
+            elif char.isupper():
+                if shift < ord('A'):
+                    shift += 26
+            decrypted_text += chr(shift)
+        else:
+            decrypted_text += char
+    return decrypted_text
+
+def generate_possible_plaintexts(ciphertext):
+    frequency_order = letter_frequency_attack(ciphertext)
+    possible_plaintexts = []
+    for i in range(26):
+        possible_plaintexts.append(decrypt_additive_cipher(ciphertext, i))
+    return possible_plaintexts
+
+ciphertext = "your_ciphertext_here"
+top_n = 10
+possible_plaintexts = generate_possible_plaintexts(ciphertext)
+for i in range(top_n):
+    print(possible_plaintexts[i])
