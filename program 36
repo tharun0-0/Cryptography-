@@ -1,0 +1,40 @@
+# Affine Caesar Cipher in Python
+
+def affine_caesar_encrypt(plaintext, a, b):
+    ciphertext = ""
+    for char in plaintext:
+        if char.isalpha():
+            shift = ord(char.lower()) - ord('a')
+            encrypted_char = (a * shift + b) % 26
+            if char.isupper():
+                ciphertext += chr(encrypted_char + ord('A'))
+            else:
+                ciphertext += chr(encrypted_char + ord('a'))
+        else:
+            ciphertext += char
+    return ciphertext
+
+def affine_caesar_decrypt(ciphertext, a, b):
+    plaintext = ""
+    a_inv = pow(a, -1, 26)
+    for char in ciphertext:
+        if char.isalpha():
+            shift = ord(char.lower()) - ord('a')
+            decrypted_char = (a_inv * (shift - b)) % 26
+            if char.isupper():
+                plaintext += chr(decrypted_char + ord('A'))
+            else:
+                plaintext += chr(decrypted_char + ord('a'))
+        else:
+            plaintext += char
+    return plaintext
+
+# Example usage
+a = 5
+b = 8
+plaintext = "Hello World"
+ciphertext = affine_caesar_encrypt(plaintext, a, b)
+decrypted_text = affine_caesar_decrypt(ciphertext, a, b)
+
+print("Ciphertext:", ciphertext)
+print("Decrypted Text:", decrypted_text)
