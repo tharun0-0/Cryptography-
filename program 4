@@ -1,0 +1,61 @@
+# Playfair Algorithm in Python
+
+def create_matrix(key):
+    key = key.upper().replace("J", "I")
+    matrix = []
+    seen = set()
+    for char in key:
+        if char not in seen and char.isalpha():
+            seen.add(char)
+            matrix.append(char)
+    for char in "ABCDEFGHIKLMNOPQRSTUVWXYZ":
+        if char not in seen:
+            seen.add(char)
+            matrix.append(char)
+    return [matrix[i:i + 5] for i in range(0, 25, 5)]
+
+def find_position(matrix, char):
+    for i, row in enumerate(matrix):
+        for j, c in enumerate(row):
+            if c == char:
+                return i, j
+
+def encrypt_pair(pair, matrix):
+    row1, col1 = find_position(matrix, pair[0])
+    row2, col2 = find_position(matrix, pair[1])
+    if row1 == row2:
+        return matrix[row1][(col1 + 1) % 5] + matrix[row2][(col2 + 1) % 5]
+    elif col1 == col2:
+        return matrix[(row1 + 1) % 5][col1] + matrix[(row2 + 1) % 5][col2]
+    else:
+        return matrix[row1][col2] + matrix[row2][col1]
+
+def playfair_encrypt(plaintext, key):
+    matrix = create_matrix(key)
+    plaintext = plaintext.upper().replace("J", "I").replace(" ", "")
+    # Insert 'X' between duplicate letters in a pair
+    i = 0
+    new_plaintext = ""
+    while i < len(plaintext):
+        new_plaintext += plaintext[i]
+        if i + 1 < len(plaintext):
+            if plaintext[i] == plaintext[i + 1]:
+                new_plaintext += "X"
+                i += 1
+            else:
+                new_plaintext += plaintext[i + 1]
+                i += 2
+        else:
+            new_plaintext += "X"
+            i += 1
+
+    
+    pairs = [new_plaintext[i:i + 2] for i in range(0, len(new_plaintext), 2)]
+
+    ciphertext = ''.join(encrypt_pair(pair, matrix) for pair in pairs)
+    return ciphertext
+
+key = "KEYWORD"
+plaintext = "HELLO WORLD"
+ciphertext = playfair_encrypt(plaintext, key)
+print("Ciphertext:", ciphertext)
