@@ -1,0 +1,26 @@
+def generate_cipher(keyword):
+    alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    keyword = ''.join(sorted(set(keyword), key=keyword.index)).upper()
+    cipher = keyword + ''.join([letter for letter in alphabet if letter not in keyword])
+    return cipher
+
+def encrypt(plaintext, cipher):
+    alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    plaintext = plaintext.upper()
+    encrypted = ''.join([cipher[alphabet.index(char)] if char in alphabet else char for char in plaintext])
+    return encrypted
+
+def decrypt(ciphertext, cipher):
+    alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    decrypted = ''.join([alphabet[cipher.index(char)] if char in cipher else char for char in ciphertext])
+    return decrypted
+
+keyword = "CIPHER"
+cipher = generate_cipher(keyword)
+plaintext = "HELLO WORLD"
+ciphertext = encrypt(plaintext, cipher)
+decrypted_text = decrypt(ciphertext, cipher)
+
+print("Cipher:", cipher)
+print("Ciphertext:", ciphertext)
+print("Decrypted Text:", decrypted_text)
