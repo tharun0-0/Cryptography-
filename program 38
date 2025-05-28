@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void encrypt(int plaintext[2], int key[2][2], int ciphertext[2]) {
+    for (int i = 0; i < 2; i++) {
+        ciphertext[i] = 0;
+        for (int j = 0; j < 2; j++) {
+            ciphertext[i] += key[i][j] * plaintext[j];
+        }
+        ciphertext[i] %= 26;
+    }
+}
+
+void decrypt(int ciphertext[2], int key[2][2], int plaintext[2]) {
+    int inv_key[2][2];
+    int det = key[0][0] * key[1][1] - key[0][1] * key[1][0];
+    det = (det + 26) % 26;
+    int det_inv = 0;
+    for (int i = 0; i < 26; i++) {
+        if ((det * i) % 26 == 1) {
+            det_inv = i;
+            break;
+        }
+    }
+    inv_key[0][0] = (key[1][1] * det_inv) % 26;
+    inv_key[0][1] = (-key[0][1] * det_inv + 26) % 26;
+    inv_key[1][0] = (-key[1][0] * det_inv + 26) % 26;
+    inv_key[1][1] = (key[0][0] * det_inv) % 26;
+
+    for (int i = 0; i < 2; i++) {
+        plaintext[i] = 0;
+        for (int j = 0; j < 2; j++) {
+            plaintext[i] += inv_key[i][j] * ciphertext[j];
+        }
+        plaintext[i] = (plaintext[i] + 26) % 26;
+    }
+}
+
+int main() {
+    int key[2][2] = {{6, 24}, {1, 13}};
+    int plaintext[2] = {7, 4};
+    int ciphertext[2];
+
+    encrypt(plaintext, key, ciphertext);
+    printf("Ciphertext: %c %c\n", ciphertext[0] + 'A', ciphertext[1] + 'A');
+
+    int decrypted[2];
+    decrypt(ciphertext, key, decrypted);
+    printf("Decrypted: %c %c\n", decrypted[0] + 'A', decrypted[1] + 'A');
+
+    return 0;
+}
