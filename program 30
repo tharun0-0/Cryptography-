@@ -1,0 +1,26 @@
+# CBC MAC Implementation in Python
+
+def xor_bytes(a, b):
+    return bytes(x ^ y for x, y in zip(a, b))
+
+def cbc_mac(key, message):
+    block_size = 16
+    padded_message = message + (block_size - len(message) % block_size) * bytes([block_size - len(message) % block_size])
+    iv = bytes(block_size)
+    mac = iv
+
+    for i in range(0, len(padded_message), block_size):
+        block = padded_message[i:i + block_size]
+        mac = xor_bytes(mac, block)
+        mac = encrypt(key, mac)
+
+    return mac
+
+def encrypt(key, block):
+    # Simple block cipher encryption (placeholder for actual encryption logic)
+    return block  # Replace with actual encryption logic
+
+key = b'secretkey123456'  # Example key
+message = b'examplemessage'  # Example message
+mac = cbc_mac(key, message)
+print(mac.hex())
