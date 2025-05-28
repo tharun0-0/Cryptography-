@@ -1,0 +1,52 @@
+def create_playfair_matrix(key):
+    alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+    key = ''.join(sorted(set(key), key=key.index)).replace("J", "I")
+    matrix = [char for char in key if char in alphabet]
+    for char in alphabet:
+        if char not in matrix:
+            matrix.append(char)
+    return matrix
+
+def prepare_message(message):
+    message = message.upper().replace("J", "I").replace(" ", "")
+    prepared = []
+    i = 0
+    while i < len(message):
+        if i + 1 < len(message) and message[i] == message[i + 1]:
+            prepared.append(message[i] + 'X')
+            i += 1
+        else:
+            prepared.append(message[i:i + 2])
+            i += 2
+    if len(prepared[-1]) == 1:
+        prepared[-1] += 'X'
+    return prepared
+
+def encrypt_playfair(message, key):
+    matrix = create_playfair_matrix(key)
+    prepared_message = prepare_message(message)
+    encrypted_message = ""
+    for digraph in prepared_message:
+        index1 = matrix.index(digraph[0])
+        index2 = matrix.index(digraph[1])
+        row1, col1 = divmod(index1, 5)
+        row2, col2 = divmod(index2, 5)
+
+        if row1 == row2:
+            # Same row
+            encrypted_message += matrix[row1 * 5 + (col1 + 1) % 5]
+            encrypted_message += matrix[row2 * 5 + (col2 + 1) % 5]
+        elif col1 == col2:
+            # Same column
+            encrypted_message += matrix[((row1 + 1) % 5) * 5 + col1]
+            encrypted_message += matrix[((row2 + 1) % 5) * 5 + col2]
+        else:
+            # Rectangle swap
+            encrypted_message += matrix[row1 * 5 + col2]
+            encrypted_message += matrix[row2 * 5 + col1]
+    return encrypted_message
+
+key = "MFHIKUNOPQZVWXYELARGDSBC"
+message = "Must see you over Cadogan West. Coming at once."
+encrypted = encrypt_playfair(message, key)
+print(encrypted)
