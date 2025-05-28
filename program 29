@@ -1,0 +1,31 @@
+import time
+
+class SHA3:
+    def __init__(self, block_size=1024):
+        self.block_size = block_size
+        self.state = [[0 for _ in range(block_size // 64)] for _ in range(5)]
+        self.capacity = block_size // 2
+        self.message_block = [[0 for _ in range(block_size // 64)] for _ in range(5)]
+        self.nonzero_lanes = 0
+
+    def process_message(self):
+        for i in range(5):
+            for j in range(len(self.message_block[i])):
+                if self.message_block[i][j] != 0:
+                    self.state[i][j] = self.message_block[i][j]
+                    self.nonzero_lanes += 1
+
+    def check_nonzero_lanes(self):
+        return self.nonzero_lanes >= (self.capacity // 64) * 5
+
+    def run(self):
+        start_time = time.time()
+        while not self.check_nonzero_lanes():
+            self.process_message()
+            self.message_block = [[1 for _ in range(self.block_size // 64)] for _ in range(5)]
+        end_time = time.time()
+        return end_time - start_time
+
+sha3 = SHA3()
+time_taken = sha3.run()
+print(f"Time taken to have all lanes nonzero: {time_taken} seconds")
