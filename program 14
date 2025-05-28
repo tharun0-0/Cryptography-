@@ -1,0 +1,12 @@
+import math
+
+def playfair_keys():
+    total_keys = math.factorial(25) / (math.factorial(5) * math.factorial(20))
+    unique_keys = total_keys / 2
+    return total_keys, unique_keys
+
+total_keys, unique_keys = playfair_keys()
+total_keys_power = math.log2(total_keys)
+unique_keys_power = math.log2(unique_keys)
+
+total_keys_power, unique_keys_power
