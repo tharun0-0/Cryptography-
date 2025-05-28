@@ -1,0 +1,73 @@
+class SimpleCipher:
+    def _init_(self, key):
+        self.key = key
+
+    def ecb_encrypt(self, plaintext):
+        blocks = self._pad(plaintext)
+        return ''.join(self._encrypt_block(block) for block in blocks)
+
+    def ecb_decrypt(self, ciphertext):
+        blocks = [ciphertext[i:i + len(self.key)] for i in range(0, len(ciphertext), len(self.key))]
+        return ''.join(self._decrypt_block(block) for block in blocks).rstrip('\0')
+
+    def cbc_encrypt(self, plaintext):
+        blocks = self._pad(plaintext)
+        iv = '00000000'
+        ciphertext = iv
+        previous_block = iv
+        for block in blocks:
+            block = self._xor(block, previous_block)
+            encrypted_block = self._encrypt_block(block)
+            ciphertext += encrypted_block
+            previous_block = encrypted_block
+        return ciphertext
+
+    def cbc_decrypt(self, ciphertext):
+        blocks = [ciphertext[i:i + len(self.key)] for i in range(0, len(ciphertext), len(self.key))]
+        iv = blocks[0]
+        decrypted_text = ''
+        previous_block = iv
+        for block in blocks[1:]:
+            decrypted_block = self._decrypt_block(block)
+            decrypted_block = self._xor(decrypted_block, previous_block)
+            decrypted_text += decrypted_block
+            previous_block = block
+        return decrypted_text.rstrip('\0')
+
+    def cfb_encrypt(self, plaintext):
+        blocks = self._pad(plaintext)
+        iv = '00000000'
+        ciphertext = iv
+        previous_block = iv
+        for block in blocks:
+            encrypted_iv = self._encrypt_block(previous_block)
+            ciphertext_block = self._xor(block, encrypted_iv)
+            ciphertext += ciphertext_block
+            previous_block = ciphertext_block
+        return ciphertext
+
+    def cfb_decrypt(self, ciphertext):
+        blocks = [ciphertext[i:i + len(self.key)] for i in range(0, len(ciphertext), len(self.key))]
+        iv = blocks[0]
+        decrypted_text = ''
+        previous_block = iv
+        for block in blocks[1:]:
+            encrypted_iv = self._encrypt_block(previous_block)
+            decrypted_block = self._xor(block, encrypted_iv)
+            decrypted_text += decrypted_block
+            previous_block = block
+        return decrypted_text.rstrip('\0')
+
+    def _pad(self, plaintext):
+        while len(plaintext) % len(self.key) != 0:
+            plaintext += '\0'
+        return [plaintext[i:i + len(self.key)] for i in range(0, len(plaintext), len(self.key))]
+
+    def _encrypt_block(self, block):
+        return ''.join(chr((ord(char) + ord(self.key[i % len(self.key)])) % 256) for i, char in enumerate(block))
+
+    def _decrypt_block(self, block):
+        return ''.join(chr((ord(char) - ord(self.key[i % len(self.key)])) % 256) for i, char in enumerate(block))
+
+    def _xor(self, block, key):
+        return ''.join(chr(ord(b) ^ ord(k)) for b, k in zip(block, key))
