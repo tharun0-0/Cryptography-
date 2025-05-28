@@ -1,0 +1,22 @@
+from Crypto.Cipher import DES3
+from Crypto.Util.Padding import pad, unpad
+import os
+
+def encrypt(plaintext, key):
+    cipher = DES3.new(key, DES3.MODE_CBC)
+    iv = cipher.iv
+    ciphertext = cipher.encrypt(pad(plaintext.encode(), DES3.block_size))
+    return iv + ciphertext
+
+def decrypt(ciphertext, key):
+    iv = ciphertext[:DES3.block_size]
+    cipher = DES3.new(key, DES3.MODE_CBC, iv)
+    plaintext = unpad(cipher.decrypt(ciphertext[DES3.block_size:]), DES3.block_size)
+    return plaintext.decode()
+
+key = DES3.adjust_key_parity(os.urandom(24))
+plaintext = "This is a secret message."
+ciphertext = encrypt(plaintext, key)
+
+print("Encrypted (hex):", ciphertext.hex())
+print("Decrypted:", decrypt(ciphertext, key))
